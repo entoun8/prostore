@@ -1,0 +1,34 @@
+import { PrismaClient } from "@prisma/client";
+
+const globalForPrisma = globalThis as unknown as {
+  prisma: ReturnType<typeof createPrismaClient> | undefined;
+};
+
+function createPrismaClient() {
+  return new PrismaClient({
+    datasources: {
+      db: {
+        url: process.env.DATABASE_URL,
+      },
+    },
+  }).$extends({
+    result: {
+      product: {
+        price: {
+          compute(product) {
+            return product.price.toString();
+          },
+        },
+        rating: {
+          compute(product) {
+            return product.rating.toString();
+          },
+        },
+      },
+    },
+  });
+}
+
+export const prisma = globalForPrisma.prisma ?? createPrismaClient();
+
+if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
