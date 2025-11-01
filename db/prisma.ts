@@ -9,7 +9,7 @@ const connectionString = `${process.env.DATABASE_URL}`;
 const pool = new Pool({ connectionString });
 const adapter = new PrismaNeon(pool);
 
-export const prisma = new PrismaClient({ adapter }).$extends({
+export const prisma = (new PrismaClient({ adapter } as any) as PrismaClient).$extends({
   result: {
     product: {
       price: {
