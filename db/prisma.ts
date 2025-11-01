@@ -1,4 +1,9 @@
 import { PrismaClient } from "@/lib/generated/prisma/client";
+import { PrismaNeon } from "@prisma/adapter-neon";
+import { neonConfig } from "@neondatabase/serverless";
+import ws from "ws";
+
+neonConfig.webSocketConstructor = ws;
 
 const globalForPrisma = globalThis as unknown as {
   prisma: ReturnType<typeof createPrismaClient> | undefined;
@@ -11,7 +16,10 @@ function createPrismaClient() {
     throw new Error("DATABASE_URL environment variable is not set");
   }
 
+  const adapter = new PrismaNeon({ connectionString });
+
   return new PrismaClient({
+    adapter,
     log: ["error", "warn"],
   }).$extends({
     result: {
