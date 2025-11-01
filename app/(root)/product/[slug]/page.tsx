@@ -6,6 +6,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { getProductBySlug } from "@/lib/actions/product.actions";
 import { notFound } from "next/navigation";
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 type Params = {
   params: Promise<{ slug: string }>;
 };
